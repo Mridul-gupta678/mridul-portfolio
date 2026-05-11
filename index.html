@@ -294,7 +294,7 @@
     .ach-org { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); }
 
     /* =========================================
-       AI CHATBOT ASSISTANT
+       AI CHATBOT ASSISTANT (UPGRADED)
        ========================================= */
     .ai-widget { position: fixed; bottom: 2rem; right: 2rem; z-index: 9999; }
     .ai-toggle {
@@ -306,11 +306,11 @@
     .ai-toggle:hover { transform: scale(1.05); }
     
     .ai-panel {
-      position: absolute; bottom: 75px; right: 0; width: 360px; height: 500px;
+      position: absolute; bottom: 75px; right: 0; width: 380px; height: 550px;
       border-radius: 16px; display: flex; flex-direction: column; overflow: hidden;
       opacity: 0; pointer-events: none; transform: translateY(20px) scale(0.95);
       transition: all 0.4s var(--ease-out); transform-origin: bottom right;
-      box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+      box-shadow: 0 30px 60px rgba(0,0,0,0.8); border: 1px solid var(--border);
     }
     .ai-panel.active { opacity: 1; pointer-events: auto; transform: translateY(0) scale(1); }
     
@@ -321,15 +321,30 @@
     .ai-name { font-size: 0.9rem; font-weight: 500; }
     .ai-status { font-size: 0.7rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); }
     
-    .ai-body { flex: 1; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1.2rem; background: rgba(5,5,5,0.95); }
+    .ai-body { flex: 1; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1.2rem; background: rgba(5,5,5,0.95); scroll-behavior: smooth; }
     .ai-msg { padding: 1rem; border-radius: 8px; font-size: 0.85rem; line-height: 1.6; max-width: 85%; }
     .msg-bot { background: rgba(255,255,255,0.05); border: 1px solid var(--border); align-self: flex-start; color: var(--text-muted); }
     .msg-bot strong { color: var(--text-main); font-weight: 500; }
     .msg-user { background: var(--text-main); color: var(--bg); align-self: flex-end; }
     
-    .ai-input { padding: 1rem; border-top: 1px solid var(--border); background: rgba(10,10,10,0.9); display: flex; align-items: center; }
-    .ai-input input { width: 100%; background: transparent; border: none; color: #fff; font-family: var(--font-sans); font-size: 0.85rem; outline: none; }
+    .ai-suggestions {
+      display: flex; gap: 0.5rem; padding: 0.8rem 1rem; overflow-x: auto;
+      background: rgba(10,10,10,0.95); border-top: 1px solid var(--border);
+      scrollbar-width: none;
+    }
+    .ai-suggestions::-webkit-scrollbar { display: none; }
+    .suggest-btn {
+      background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-muted);
+      font-family: var(--font-sans); font-size: 0.75rem; padding: 0.4rem 0.8rem; border-radius: 100px;
+      white-space: nowrap; cursor: none; transition: all 0.3s;
+    }
+    .suggest-btn:hover { background: rgba(255,255,255,0.1); color: var(--text-main); }
+
+    .ai-input { padding: 1rem; border-top: 1px solid var(--border); background: rgba(10,10,10,0.95); display: flex; align-items: center; gap: 0.5rem; }
+    .ai-input input { flex: 1; background: transparent; border: none; color: #fff; font-family: var(--font-sans); font-size: 0.85rem; outline: none; }
     .ai-input input::placeholder { color: var(--text-muted); }
+    .send-btn { background: none; border: none; color: var(--text-muted); cursor: none; transition: color 0.3s; display: flex; align-items: center; justify-content: center; }
+    .send-btn:hover { color: var(--text-main); }
     
     .typing-indicator { display: flex; gap: 4px; padding: 0.5rem; }
     .t-dot { width: 4px; height: 4px; background: var(--text-muted); border-radius: 50%; animation: type 1.4s infinite; }
@@ -360,7 +375,9 @@
       footer { flex-direction: column; gap: 2rem; text-align: center; }
       #cursor, #cursor-ring { display: none; }
       body { cursor: auto; }
-      .ai-panel { width: calc(100vw - 4rem); bottom: 80px; right: -1rem; }
+      .ai-panel { width: calc(100vw - 2rem); bottom: 80px; right: -1rem; height: 80vh; max-height: 600px;}
+      .suggest-btn { cursor: pointer; }
+      .send-btn { cursor: pointer; }
     }
   </style>
 </head>
@@ -745,13 +762,14 @@
     </div>
   </footer>
 
-  <!-- AI Chatbot Assistant -->
+  <!-- AI Chatbot Assistant (Upgraded) -->
   <div class="ai-widget">
     <button class="ai-toggle glass" id="chat-toggle">
       <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
     </button>
     
     <div class="ai-panel glass" id="chat-panel">
+      <!-- Header -->
       <div class="ai-header">
         <div class="ai-avatar">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a2 2 0 0 1 2 2 2 2 0 0 1-2 2 2 2 0 0 1-2-2 2 2 0 0 1 2-2z"></path><path d="M12 6v14"></path><path d="M8 10l4-4 4 4"></path></svg>
@@ -762,15 +780,27 @@
         </div>
       </div>
       
+      <!-- Body -->
       <div class="ai-body" id="chat-body">
         <div class="ai-msg msg-bot">
-          Initializing knowledge base...<br><br>
-          Hello. I'm Mridul's AI assistant. I can explain his architecture, projects, or help you get in touch. What would you like to know?
+          Hello! I'm MG.AI, Mridul's autonomous portfolio assistant. I can explain his architecture, walk you through his projects, or help you get in touch. What would you like to know?
         </div>
       </div>
+
+      <!-- Suggested Prompts -->
+      <div class="ai-suggestions" id="ai-suggestions">
+        <button class="suggest-btn">Tech Stack</button>
+        <button class="suggest-btn">InterviewAI</button>
+        <button class="suggest-btn">Education</button>
+        <button class="suggest-btn">Contact Info</button>
+      </div>
       
+      <!-- Input Area -->
       <div class="ai-input">
-        <input type="text" id="chat-input-field" placeholder="Ask about tech stack, projects...">
+        <input type="text" id="chat-input-field" placeholder="Ask about tech stack, projects..." autocomplete="off">
+        <button class="send-btn" id="chat-send-btn">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        </button>
       </div>
     </div>
   </div>
@@ -1004,12 +1034,14 @@
     });
 
     /* =========================================
-       AI CHATBOT LOGIC
+       AI CHATBOT LOGIC (UPGRADED ENGINE)
        ========================================= */
     const chatToggle = document.getElementById('chat-toggle');
     const chatPanel = document.getElementById('chat-panel');
     const chatBody = document.getElementById('chat-body');
     const chatInput = document.getElementById('chat-input-field');
+    const chatSendBtn = document.getElementById('chat-send-btn');
+    const suggestionBtns = document.querySelectorAll('.suggest-btn');
 
     let chatOpen = false;
     chatToggle.addEventListener('click', () => {
@@ -1018,11 +1050,83 @@
       else chatPanel.classList.remove('active');
     });
 
+    const knowledgeBase = [
+      {
+        keywords: ["interview", "interviewai", "mock", "platform"],
+        response: "<strong>InterviewAI</strong> is Mridul's flagship production-ready platform. It uses Next.js, GPT-4o, WebSockets, and Redis to simulate FAANG-level technical interviews with real-time voice, live code execution, and 4-axis performance scoring."
+      },
+      {
+        keywords: ["agent", "jobhuntagent", "jobhunt", "autonomous"],
+        response: "<strong>JobHuntAgent</strong> is a complex multi-agent system built using LangGraph and Claude 3.5. It orchestrates 5 autonomous agents to scrape jobs, run semantic matching via pgvector, and draft tailored cover letters."
+      },
+      {
+        keywords: ["price", "pricepilot", "scraping", "tracker"],
+        response: "<strong>PricePilot</strong> is his full-stack price tracking engine built on FastAPI. It features real-time scraping of Indian e-commerce sites and historical price trend analysis."
+      },
+      {
+        keywords: ["medpath", "healthcare", "health", "doctor"],
+        response: "<strong>MedPath</strong> is an AI-powered healthcare platform he built for doctor discovery and AI symptom analysis, built and scaled with PostgreSQL and Next.js."
+      },
+      {
+        keywords: ["vision", "image", "hash", "research", "deep learning", "duplicate"],
+        response: "His deep learning research, <strong>Vision Hash</strong>, uses Siamese Vision Transformers for near-duplicate image detection. It utilizes FAISS and contrastive loss, achieving 90% accuracy and a 95% F1-score."
+      },
+      {
+        keywords: ["stack", "skills", "tech", "technologies", "languages", "frameworks", "backend", "frontend"],
+        response: "Mridul's core stack includes:<br><br>• <strong>Languages:</strong> Python, TypeScript, Java, C++<br>• <strong>Web:</strong> Next.js, FastAPI, Spring Boot<br>• <strong>AI/ML:</strong> PyTorch, LangGraph, Vision Transformers<br>• <strong>DBs:</strong> PostgreSQL, Redis, pgvector."
+      },
+      {
+        keywords: ["contact", "hire", "email", "phone", "reach", "touch", "resume"],
+        response: "You can reach Mridul at <strong>mridulg.678@gmail.com</strong> or call <strong>+91 85297 16440</strong>. He is actively looking for engineering roles and internships. You can also connect on <a href='https://www.linkedin.com/in/mridul-gupta-84a5422a5' target='_blank' style='color:var(--text-main)'>LinkedIn</a>."
+      },
+      {
+        keywords: ["education", "kiit", "college", "degree", "university", "background"],
+        response: "Mridul is currently pursuing a B.Tech in Computer Science & Engineering at <strong>KIIT University</strong> (2023-2027) and holds a CGPA of 7.5. He's also solved 200+ problems in competitive programming."
+      },
+      {
+        keywords: ["who", "about", "yourself", "mridul", "profile"],
+        response: "Mridul is a Full-Stack Developer & AI Engineer specializing in autonomous agents, AI product engineering, and scalable distributed systems. He loves building intelligent systems that solve real problems."
+      },
+      {
+        keywords: ["github", "linkedin", "repo", "source", "code"],
+        response: "You can explore his open-source work at <a href='https://github.com/Mridul-gupta678' target='_blank' style='color:var(--text-main)'>GitHub</a> or connect with him on <a href='https://www.linkedin.com/in/mridul-gupta-84a5422a5' target='_blank' style='color:var(--text-main)'>LinkedIn</a>."
+      },
+      {
+        keywords: ["hi", "hello", "hey", "greetings", "sup"],
+        response: "Hello! I'm MG.AI. I can tell you about Mridul's projects, technical skills, or how to contact him. What would you like to know?"
+      }
+    ];
+
+    function findResponse(query) {
+      query = query.toLowerCase();
+      let bestMatch = null;
+      let maxScore = 0;
+      
+      knowledgeBase.forEach(item => {
+        let score = 0;
+        item.keywords.forEach(kw => {
+          if(query.includes(kw)) score++;
+        });
+        if(score > maxScore) {
+          maxScore = score;
+          bestMatch = item.response;
+        }
+      });
+      
+      return bestMatch || "I'm not completely sure about that, but Mridul is always expanding his knowledge. I recommend emailing him directly at <a href='mailto:mridulg.678@gmail.com' style='color:var(--text-main)'>mridulg.678@gmail.com</a> for specific technical discussions!";
+    }
+
     function addMessage(text, sender) {
       const div = document.createElement('div');
       div.className = `ai-msg ${sender === 'bot' ? 'msg-bot' : 'msg-user'}`;
       div.innerHTML = text;
       chatBody.appendChild(div);
+      
+      gsap.fromTo(div, 
+        { opacity: 0, y: 10, scale: 0.98 }, 
+        { opacity: 1, y: 0, scale: 1, duration: 0.3, ease: "power2.out" }
+      );
+      
       chatBody.scrollTop = chatBody.scrollHeight;
     }
 
@@ -1035,36 +1139,32 @@
       return div;
     }
 
-    chatInput.addEventListener('keypress', (e) => {
-      if(e.key === 'Enter' && chatInput.value.trim() !== '') {
-        const val = chatInput.value.trim();
-        addMessage(val, 'user');
-        chatInput.value = '';
-        
-        const typingIndicator = showTyping();
-        
-        // Mock AI inference delay
-        setTimeout(() => {
-          typingIndicator.remove();
-          
-          let reply = "I'm accessing the knowledge base... Mridul focuses heavily on AI product engineering, distributed systems, and modern full-stack tools.";
-          const query = val.toLowerCase();
-          
-          if(query.includes('interview')) {
-            reply = "<strong>InterviewAI</strong> is his flagship project. It uses Next.js, GPT-4o, WebSockets, and Redis to simulate real-time technical interviews with sub-second latency.";
-          } else if(query.includes('hire') || query.includes('contact') || query.includes('email')) {
-            reply = "You can contact Mridul directly at <strong>mridulg.678@gmail.com</strong> or call <strong>+91 85297 16440</strong>. He's actively seeking engineering roles.";
-          } else if(query.includes('stack') || query.includes('skills')) {
-            reply = "Core Stack: <strong>TypeScript, Python, Next.js, FastAPI, PostgreSQL.</strong><br>AI Stack: <strong>PyTorch, LangGraph, Vector DBs, LLM Orchestration.</strong>";
-          } else if (query.includes('agent')) {
-            reply = "<strong>JobHuntAgent</strong> is a multi-agent system built with LangGraph that automates the job search pipeline using autonomous LLM agents.";
-          } else if (query.includes('education') || query.includes('kiit')) {
-            reply = "Mridul is currently pursuing a B.Tech in CSE at <strong>KIIT University</strong> (2023-2027) with a CGPA of 7.5.";
-          }
+    function handleUserInput(val) {
+      if(!val) return;
+      addMessage(val, 'user');
+      chatInput.value = '';
+      
+      const typingIndicator = showTyping();
+      
+      // Simulate network latency / thinking time
+      setTimeout(() => {
+        typingIndicator.remove();
+        const reply = findResponse(val);
+        addMessage(reply, 'bot');
+      }, 600 + Math.random() * 800);
+    }
 
-          addMessage(reply, 'bot');
-        }, 1200 + Math.random() * 800);
-      }
+    chatInput.addEventListener('keypress', (e) => {
+      if(e.key === 'Enter') handleUserInput(chatInput.value.trim());
+    });
+    chatSendBtn.addEventListener('click', () => {
+      handleUserInput(chatInput.value.trim());
+    });
+
+    suggestionBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        handleUserInput(btn.textContent);
+      });
     });
 
   </script>
