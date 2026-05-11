@@ -597,11 +597,15 @@
     .proj-featured-card:hover { background: #0f0f18; }
 
     .proj-featured-inner {
-      display: grid;
-      grid-template-columns: 1fr auto;
+      display: flex;
+      flex-direction: row;
       gap: 2rem;
       padding: 2rem 2.5rem;
       align-items: start;
+    }
+    .proj-featured-left {
+      flex: 1;
+      min-width: 0;
     }
 
     .proj-featured-top {
@@ -617,7 +621,8 @@
       flex-direction: column;
       align-items: flex-end;
       gap: 0;
-      min-width: 200px;
+      width: 220px;
+      flex-shrink: 0;
       padding-top: 0.2rem;
     }
 
@@ -625,7 +630,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 0.4rem;
-      margin-top: 0.2rem;
+      margin-top: 0.6rem;
     }
     .ppill {
       font-family: 'JetBrains Mono', monospace;
@@ -637,6 +642,9 @@
       color: var(--muted2);
       white-space: nowrap;
       transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
     }
     .ppill:hover { border-color: var(--accent); color: var(--accent); }
 
@@ -1188,79 +1196,63 @@
       </div>
       <div class="project-index reveal">
 
-        <!-- InterviewAI — Star project -->
-        <div class="proj proj-featured-card">
-          <div class="proj-featured-inner">
-            <div class="proj-featured-left">
-              <div class="proj-featured-top">
-                <span class="proj-badge badge-featured" style="margin-bottom:0;">Live ↗</span>
-                <span class="proj-category" style="margin-bottom:0;">AI · Full-Stack · Production</span>
-              </div>
-              <h3 class="proj-name" style="font-size:2rem; margin:0.6rem 0 0.5rem;">InterviewAI</h3>
-              <p class="proj-desc" style="margin-bottom:1.2rem; font-size:0.85rem;">
-                Production-ready AI mock interview platform with GPT-4o adaptive questioning,
-                Whisper voice mode, Monaco live coding editor (C++/Java/Python), resume-based
-                personalisation, and Company Mode simulating Google, Amazon, Meta & more.
-                4-axis scoring across Technical Accuracy, Communication, Problem Solving & Confidence.
-              </p>
-              <div class="proj-pills">
-                <span class="ppill">🎙 Voice Mode</span>
-                <span class="ppill">💻 Live Coding</span>
-                <span class="ppill">🏢 Company Mode</span>
-                <span class="ppill">📊 Analytics</span>
-              </div>
+        <!-- InterviewAI -->
+        <div class="proj">
+          <div class="proj-num">01</div>
+          <div class="proj-body">
+            <div class="proj-category">AI · Full-Stack · Production</div>
+            <h3 class="proj-name">InterviewAI</h3>
+            <p class="proj-desc">
+              Production-ready AI mock interview platform with GPT-4o adaptive questioning,
+              Whisper voice mode, Monaco live coding editor (C++/Java/Python), resume-based
+              personalisation, and Company Mode simulating Google, Amazon, Meta & more.
+              4-axis scoring across Technical Accuracy, Communication, Problem Solving & Confidence.
+            </p>
+            <div class="proj-stack">
+              <span class="ptag ptag-yellow">Next.js 14</span>
+              <span class="ptag ptag-blue">TypeScript</span>
+              <span class="ptag ptag-purple">GPT-4o</span>
+              <span class="ptag ptag-green">Whisper</span>
+              <span class="ptag ptag-red">Redis</span>
+              <span class="ptag ptag-blue">PostgreSQL</span>
+              <span class="ptag ptag-green">Socket.IO</span>
+              <span class="ptag ptag-purple">Prisma</span>
             </div>
-            <div class="proj-featured-right">
-              <div class="proj-stack" style="justify-content:flex-end; margin-bottom:1.2rem;">
-                <span class="ptag ptag-yellow">Next.js 14</span>
-                <span class="ptag ptag-blue">TypeScript</span>
-                <span class="ptag ptag-purple">GPT-4o</span>
-                <span class="ptag ptag-green">Whisper</span>
-                <span class="ptag ptag-red">Redis</span>
-                <span class="ptag ptag-blue">PostgreSQL</span>
-                <span class="ptag ptag-green">Socket.IO</span>
-              </div>
-              <div style="display:flex;flex-direction:column;gap:0.5rem;">
-                <a href="https://ai-interview-platform-rosy.vercel.app/" target="_blank" class="proj-link proj-link-accent">↗ Live Demo</a>
-                <a href="https://github.com/Mridul-gupta678/AI_INTERVIEW" target="_blank" class="proj-link">↗ GitHub</a>
-              </div>
+          </div>
+          <div class="proj-aside">
+            <span class="proj-badge badge-featured">Live ↗</span>
+            <div style="display:flex;flex-direction:column;gap:0.5rem;">
+              <a href="https://ai-interview-platform-rosy.vercel.app/" target="_blank" class="proj-link">↗ Live Demo</a>
+              <a href="https://github.com/Mridul-gupta678/AI_INTERVIEW" target="_blank" class="proj-link">↗ GitHub</a>
             </div>
           </div>
         </div>
 
         <!-- JobHuntAgent -->
-        <div class="proj proj-featured-card">
-          <div class="proj-featured-inner">
-            <div class="proj-featured-left">
-              <div class="proj-featured-top">
-                <span class="proj-badge badge-new" style="margin-bottom:0;">In Progress</span>
-                <span class="proj-category" style="margin-bottom:0;">AI Agents · Final Year Project</span>
-              </div>
-              <h3 class="proj-name" style="font-size:2rem; margin:0.6rem 0 0.5rem;">JobHuntAgent</h3>
-              <p class="proj-desc" style="margin-bottom:1.2rem; font-size:0.85rem;">
-                Multi-agent autonomous system managing the entire job search pipeline —
-                searches 5+ job boards, scores listings via semantic vector matching,
-                drafts tailored cover letters, monitors replies, and tracks applications
-                in a live Kanban dashboard. Five specialised agents via LangGraph.
-              </p>
-              <div class="proj-pills">
-                <span class="ppill">🤖 5 AI Agents</span>
-                <span class="ppill">📊 Kanban Tracker</span>
-                <span class="ppill">✍️ Cover Letters</span>
-                <span class="ppill">🔍 Job Scraping</span>
-              </div>
+        <div class="proj">
+          <div class="proj-num">02</div>
+          <div class="proj-body">
+            <div class="proj-category">AI Agents · Final Year Project</div>
+            <h3 class="proj-name">JobHuntAgent</h3>
+            <p class="proj-desc">
+              Multi-agent autonomous system managing the entire job search pipeline —
+              searches 5+ job boards, scores listings via semantic vector matching,
+              drafts tailored cover letters, monitors replies, and tracks all applications
+              in a live Kanban dashboard. Five specialised agents via LangGraph.
+            </p>
+            <div class="proj-stack">
+              <span class="ptag ptag-green">LangGraph</span>
+              <span class="ptag ptag-purple">Claude API</span>
+              <span class="ptag ptag-yellow">Next.js</span>
+              <span class="ptag ptag-blue">pgvector</span>
+              <span class="ptag ptag-red">BullMQ</span>
+              <span class="ptag ptag-blue">PostgreSQL</span>
+              <span class="ptag ptag-purple">Redis</span>
             </div>
-            <div class="proj-featured-right">
-              <div class="proj-stack" style="justify-content:flex-end; margin-bottom:1.2rem;">
-                <span class="ptag ptag-green">LangGraph</span>
-                <span class="ptag ptag-purple">Claude API</span>
-                <span class="ptag ptag-yellow">Next.js</span>
-                <span class="ptag ptag-blue">pgvector</span>
-                <span class="ptag ptag-red">BullMQ</span>
-                <span class="ptag ptag-blue">PostgreSQL</span>
-              </div>
-              <a href="https://github.com/Mridul-gupta678" target="_blank" class="proj-link">↗ GitHub</a>
-            </div>
+          </div>
+          <div class="proj-aside">
+            <span class="proj-badge badge-new">In Progress</span>
+            <a href="https://github.com/Mridul-gupta678" target="_blank" class="proj-link">↗ GitHub</a>
           </div>
         </div>
 
